@@ -1,0 +1,92 @@
+.page-header {
+  background: #F5F0E8;
+  padding: 20rpx 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #8B4513;
+}
+
+.category-layout {
+  display: flex;
+  height: calc(100vh - 88rpx);
+}
+
+.left-nav {
+  width: 180rpx;
+  background: #FDF8F0;
+  border-right: 1rpx solid #E8E0D0;
+}
+
+.nav-item {
+  padding: 30rpx 20rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #F0E8D8;
+}
+
+.nav-item text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.nav-item.active {
+  background: #FFF;
+  border-left: 6rpx solid #8B4513;
+}
+
+.nav-item.active text {
+  color: #8B4513;
+  font-weight: bold;
+}
+
+.right-content {
+  flex: 1;
+  background: #F5F0E8;
+  padding: 20rpx;
+}
+
+.category-info {
+  margin-bottom: 20rpx;
+}
+
+.category-banner {
+  width: 100%;
+  height: 240rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.category-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+  display: block;
+}
+
+.clothing-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}

@@ -1,0 +1,79 @@
+.card {
+  background: #FFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.card-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 320rpx;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+}
+
+.like-btn {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 52rpx;
+  height: 52rpx;
+  background: rgba(255,255,255,0.85);
+  border-radius: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.like-icon {
+  font-size: 26rpx;
+  color: #CCC;
+}
+
+.like-icon.liked {
+  color: #C41E3A;
+}
+
+.card-info {
+  padding: 16rpx;
+}
+
+.card-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.card-desc {
+  font-size: 22rpx;
+  color: #999;
+  display: block;
+  line-height: 1.4;
+  height: 60rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.card-action {
+  margin-top: 12rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.view-btn {
+  padding: 8rpx 24rpx;
+  background: #FDF8F0;
+  border: 1rpx solid #E8E0D0;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  color: #8B4513;
+}

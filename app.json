@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/category/category",
+    "pages/detail/detail",
+    "pages/tryon/tryon",
+    "pages/profile/profile"
+  ],
+  "tabBar": {
+    "color": "#8B8B8B",
+    "selectedColor": "#8B4513",
+    "backgroundColor": "#F5F0E8",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab_home.png",
+        "selectedIconPath": "images/tab_home_active.png"
+      },
+      {
+        "pagePath": "pages/category/category",
+        "text": "分类",
+        "iconPath": "images/tab_category.png",
+        "selectedIconPath": "images/tab_category_active.png"
+      },
+      {
+        "pagePath": "pages/tryon/tryon",
+        "text": "试穿",
+        "iconPath": "images/tab_tryon.png",
+        "selectedIconPath": "images/tab_tryon_active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tab_profile.png",
+        "selectedIconPath": "images/tab_profile_active.png"
+      }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F5F0E8",
+    "navigationBarTitleText": "锦衣旧梦",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

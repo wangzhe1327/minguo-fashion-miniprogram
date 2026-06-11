@@ -1,0 +1,31 @@
+<view class="container">
+  <view class="page-header" style="padding-top: {{statusBarHeight}}px;">
+    <text class="page-title">服装分类</text>
+  </view>
+
+  <view class="category-layout">
+    <!-- 左侧分类导航 -->
+    <scroll-view class="left-nav" scroll-y="true">
+      <view wx:for="{{categories}}" wx:key="id" class="nav-item {{activeCategory === item.id ? 'active' : ''}}" bindtap="onCategoryTap" data-id="{{item.id}}">
+        <text>{{item.name}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 右侧服装列表 -->
+    <scroll-view class="right-content" scroll-y="true">
+      <view class="category-info">
+        <image class="category-banner" src="{{currentBanner}}" mode="aspectFill"/>
+        <text class="category-desc">{{currentDesc}}</text>
+      </view>
+
+      <view class="clothing-list">
+        <clothing-card wx:for="{{clothingList}}" wx:key="id" item="{{item}}" bind:tap="onClothingTap" data-id="{{item.id}}"/>
+      </view>
+
+      <view class="empty-state" wx:if="{{clothingList.length === 0}}">
+        <text class="empty-icon">👗</text>
+        <text class="empty-text">该分类暂无服装</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>

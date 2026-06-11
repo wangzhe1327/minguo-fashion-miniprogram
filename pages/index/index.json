@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "clothing-card": "../../components/clothing-card/clothing-card"
+  }
+}

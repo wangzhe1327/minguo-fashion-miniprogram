@@ -1,0 +1,20 @@
+# WeChat DevTools local settings
+project.private.config.json
+
+# Local product images are stored in WeChat Cloud Storage.
+clothes/
+
+# Cloud function dependencies
+node_modules/
+cloudfunctions/**/node_modules/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Build/cache output
+miniprogram_npm/
+.temp/
+.cache/

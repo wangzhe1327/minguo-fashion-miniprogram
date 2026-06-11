@@ -1,0 +1,87 @@
+<view class="container">
+  <view class="page-header" style="padding-top: {{statusBarHeight}}px;">
+    <text class="page-title">我的</text>
+  </view>
+
+  <!-- 用户信息 -->
+  <view class="user-card">
+    <view class="user-info">
+      <view class="avatar-wrap">
+        <image class="avatar" src="{{userInfo.avatarUrl || '/images/avatar_default.png'}}" mode="aspectFill"/>
+        <view class="avatar-placeholder" wx:if="{{!userInfo.avatarUrl}}">
+          <text>👤</text>
+        </view>
+      </view>
+      <view class="user-text">
+        <text class="user-name">{{userInfo.nickName || '点击登录'}}</text>
+        <text class="user-desc" wx:if="{{userInfo.nickName}}">民国风爱好者</text>
+        <text class="user-desc" wx:else>登录后查看收藏和浏览记录</text>
+      </view>
+    </view>
+    <view class="login-btn" wx:if="{{!userInfo.nickName}}" bindtap="onLogin">
+      <text>登录</text>
+    </view>
+  </view>
+
+  <!-- 统计数据 -->
+  <view class="stats-bar">
+    <view class="stat-item">
+      <text class="stat-num">{{favorites.length}}</text>
+      <text class="stat-label">收藏</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{browseCount}}</text>
+      <text class="stat-label">浏览</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">8</text>
+      <text class="stat-label">服装</text>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-item" bindtap="goToFavorites">
+      <view class="menu-left">
+        <text class="menu-icon">♥</text>
+        <text class="menu-text">我的收藏</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToHistory">
+      <view class="menu-left">
+        <text class="menu-icon">⏱</text>
+        <text class="menu-text">浏览记录</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToAbout">
+      <view class="menu-left">
+        <text class="menu-icon">ℹ</text>
+        <text class="menu-text">关于我们</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 收藏列表 -->
+  <view class="favorites-section" wx:if="{{favorites.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">我的收藏</text>
+      <text class="section-more" bindtap="goToFavorites">查看全部 ›</text>
+    </view>
+    <view class="favorites-grid">
+      <clothing-card wx:for="{{favoriteItems}}" wx:key="id" item="{{item}}" bind:tap="onClothingTap" data-id="{{item.id}}"/>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{favorites.length === 0}}">
+    <text class="empty-icon">♥</text>
+    <text class="empty-text">还没有收藏任何服装</text>
+    <text class="empty-sub">去首页看看吧</text>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>
