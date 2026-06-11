@@ -1,4 +1,5 @@
 const app = getApp()
+const selection = require('../../utils/selection.js')
 
 Component({
   properties: {
@@ -9,12 +10,18 @@ Component({
   },
 
   data: {
-    isLiked: false
+    isLiked: false,
+    isSelected: false,
+    imageError: false
   },
 
   observers: {
-    'item.liked': function(liked) {
-      this.setData({ isLiked: liked })
+    'item.liked,item.selected,item.image': function(liked, selected) {
+      this.setData({
+        isLiked: Boolean(liked),
+        isSelected: Boolean(selected),
+        imageError: false
+      })
     }
   },
 
@@ -23,10 +30,15 @@ Component({
       this.triggerEvent('tap', { id: this.properties.item.id })
     },
 
+    onImageError() {
+      this.setData({ imageError: true })
+    },
+
     onLikeTap(e) {
-      e.stopPropagation()
+      if (e && e.stopPropagation) e.stopPropagation()
+
       const id = this.properties.item.id
-      let favorites = app.globalData.favorites
+      const favorites = app.globalData.favorites || []
       const index = favorites.indexOf(id)
 
       if (index > -1) {
@@ -40,6 +52,25 @@ Component({
       app.globalData.favorites = favorites
       wx.setStorageSync('favorites', favorites)
       this.setData({ isLiked: index === -1 })
+      this.triggerEvent('likechange', { id, liked: index === -1 })
+    },
+
+    onSelectTap(e) {
+      if (e && e.stopPropagation) e.stopPropagation()
+
+      const id = this.properties.item.id
+      const nextSelected = !this.data.isSelected
+
+      if (nextSelected) {
+        selection.addSelection(id)
+        wx.showToast({ title: '已加入清单', icon: 'success' })
+      } else {
+        selection.removeSelection(id)
+        wx.showToast({ title: '已移出清单', icon: 'none' })
+      }
+
+      this.setData({ isSelected: nextSelected })
+      this.triggerEvent('selectchange', { id, selected: nextSelected })
     }
   }
 })

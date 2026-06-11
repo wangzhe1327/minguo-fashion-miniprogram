@@ -1,35 +1,43 @@
-<view class="container">
-  <!-- 顶部导航 -->
+<view class="container detail-page">
   <view class="detail-nav" style="padding-top: {{statusBarHeight}}px;">
     <view class="nav-back" bindtap="goBack">
-      <text class="nav-icon">←</text>
+      <text>‹</text>
     </view>
     <text class="nav-title">服装详情</text>
     <view class="nav-actions">
       <view class="nav-btn" bindtap="toggleLike">
-        <text class="like-icon {{isLiked ? 'liked' : ''}}">♥</text>
+        <text class="like-icon {{isLiked ? 'liked' : ''}}">{{isLiked ? '♥' : '♡'}}</text>
       </view>
       <view class="nav-btn" bindtap="onShare">
-        <text class="share-icon">↗</text>
+        <text>分享</text>
       </view>
     </view>
   </view>
 
-  <!-- 轮播图 -->
-  <swiper class="detail-swiper" indicator-dots="true" autoplay="true" interval="4000" duration="500" circular="true" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#8B4513">
-    <swiper-item wx:for="{{item.images}}" wx:key="index">
+  <swiper
+    class="detail-swiper"
+    indicator-dots="true"
+    autoplay="true"
+    interval="4200"
+    duration="500"
+    circular="true"
+    indicator-color="rgba(255,255,255,0.55)"
+    indicator-active-color="#2F6D62"
+  >
+    <swiper-item wx:for="{{item.images}}" wx:key="*this">
       <image class="detail-img" src="{{item}}" mode="aspectFill" />
     </swiper-item>
   </swiper>
 
-  <!-- 信息区 -->
   <view class="detail-info">
     <view class="info-header">
       <view class="info-titles">
         <text class="detail-name">{{item.name}}</text>
         <text class="detail-subtitle">{{item.subtitle}}</text>
       </view>
-      <view class="detail-price">{{item.price}}</view>
+      <view class="detail-price">
+        <text>{{item.price}}</text>
+      </view>
     </view>
 
     <view class="detail-tags">
@@ -39,37 +47,66 @@
     </view>
 
     <view class="detail-section">
-      <text class="section-label">简介</text>
+      <view class="section-head">
+        <text class="section-label">简介</text>
+      </view>
       <text class="section-text">{{item.desc}}</text>
     </view>
 
     <view class="detail-section">
-      <text class="section-label">详细信息</text>
-      <view class="detail-specs">
-        <view class="spec-row" wx:for="{{specs}}" wx:key="label">
-          <text class="spec-label">{{item.label}}</text>
-          <text class="spec-value">{{item.value}}</text>
+      <view class="section-head">
+        <text class="section-label">选款建议</text>
+      </view>
+      <view class="tip-list">
+        <view class="tip-item" wx:for="{{styleTips}}" wx:key="index">
+          <text>{{item}}</text>
         </view>
       </view>
     </view>
 
     <view class="detail-section">
-      <text class="section-label">相关推荐</text>
+      <view class="section-head">
+        <text class="section-label">详细信息</text>
+      </view>
+      <view class="detail-specs">
+        <view class="spec-row" wx:for="{{specs}}" wx:key="label" wx:for-item="spec">
+          <text class="spec-label">{{spec.label}}</text>
+          <text class="spec-value">{{spec.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="detail-section">
+      <view class="section-head">
+        <text class="section-label">相关推荐</text>
+      </view>
       <scroll-view class="recommend-scroll" scroll-x="true" show-scrollbar="false">
         <view class="recommend-list">
-          <view class="recommend-item" wx:for="{{recommendations}}" wx:key="id" bindtap="onRecommendTap" data-id="{{item.id}}">
-            <image class="recommend-img" src="{{item.image}}" mode="aspectFill" />
-            <text class="recommend-name">{{item.name}}</text>
+          <view
+            class="recommend-item"
+            wx:for="{{recommendations}}"
+            wx:key="id"
+            wx:for-item="recommend"
+            bindtap="onRecommendTap"
+            data-id="{{recommend.id}}"
+          >
+            <image class="recommend-img" src="{{recommend.image}}" mode="aspectFill" />
+            <text class="recommend-name">{{recommend.name}}</text>
           </view>
         </view>
       </scroll-view>
     </view>
   </view>
 
-  <!-- 底部按钮 -->
   <view class="detail-footer">
-    <view class="footer-btn primary" bindtap="onTryOn">
-      <text>虚拟试穿</text>
+    <view class="footer-btn light" bindtap="onCopyConsult">
+      <text>复制咨询</text>
+    </view>
+    <view class="footer-btn outline" bindtap="goSelection">
+      <text>看清单</text>
+    </view>
+    <view class="footer-btn primary {{isSelected ? 'selected' : ''}}" bindtap="toggleSelection">
+      <text>{{isSelected ? '移出清单' : '加入清单'}}</text>
     </view>
   </view>
 </view>

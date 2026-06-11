@@ -1,5 +1,7 @@
 const data = require('../../utils/data.js')
 const { resolveCloudUrls } = require('../../utils/cloudAssets.js')
+const { getStatusBarHeight } = require('../../utils/system.js')
+const selection = require('../../utils/selection.js')
 const app = getApp()
 
 Page({
@@ -10,47 +12,56 @@ Page({
     clothingList: [],
     activeCategory: 'all',
     currentCategoryName: '精选',
-    searchKeyword: ''
+    searchKeyword: '',
+    selectionCount: 0
   },
 
   async onLoad() {
-    const sysInfo = wx.getSystemInfoSync()
     const banners = await resolveCloudUrls(data.banners)
     const clothingList = await resolveCloudUrls(data.clothingList)
+
     this.setData({
-      statusBarHeight: sysInfo.statusBarHeight,
+      statusBarHeight: getStatusBarHeight(),
       categories: data.categories,
       banners,
-      clothingList
+      clothingList: this.decorateItems(clothingList),
+      selectionCount: selection.getSelectionList().length
     })
   },
 
   onShow() {
-    this.updateFavorites()
+    this.syncItemStates()
   },
 
-  updateFavorites() {
-    const favorites = app.globalData.favorites
-    const clothingList = this.data.clothingList.map(item => ({
+  decorateItems(items) {
+    const favorites = app.globalData.favorites || []
+    const selectedIds = selection.getSelectionList()
+
+    return (items || []).map(item => ({
       ...item,
-      liked: favorites.includes(item.id)
+      liked: favorites.includes(item.id),
+      selected: selectedIds.includes(item.id)
     }))
-    this.setData({ clothingList })
+  },
+
+  syncItemStates() {
+    if (!this.data.clothingList.length) return
+
+    this.setData({
+      clothingList: this.decorateItems(this.data.clothingList),
+      selectionCount: selection.getSelectionList().length
+    })
   },
 
   async onCategoryTap(e) {
     const id = e.currentTarget.dataset.id
-    const category = data.categories.find(c => c.id === id)
+    const category = data.categories.find(item => item.id === id)
     const clothingList = await resolveCloudUrls(data.getByCategory(id))
-    const favorites = app.globalData.favorites
 
     this.setData({
       activeCategory: id,
       currentCategoryName: category ? category.name : '精选',
-      clothingList: clothingList.map(item => ({
-        ...item,
-        liked: favorites.includes(item.id)
-      })),
+      clothingList: this.decorateItems(clothingList),
       searchKeyword: ''
     })
   },
@@ -61,49 +72,57 @@ Page({
 
   async onSearch() {
     const keyword = this.data.searchKeyword.trim().toLowerCase()
-    if (!keyword) {
-      const clothingList = await resolveCloudUrls(data.getByCategory(this.data.activeCategory))
-      this.setData({
-        clothingList,
-        activeCategory: this.data.activeCategory
-      })
-      return
-    }
+    const source = keyword ? data.clothingList : data.getByCategory(this.data.activeCategory)
 
-    const all = data.clothingList
-    const filtered = all.filter(item =>
-      item.name.toLowerCase().includes(keyword) ||
-      item.subtitle.toLowerCase().includes(keyword) ||
-      item.categoryName.toLowerCase().includes(keyword) ||
-      item.tags.some(tag => tag.toLowerCase().includes(keyword))
-    )
-    const favorites = app.globalData.favorites
+    const filtered = keyword
+      ? source.filter(item =>
+        item.name.toLowerCase().includes(keyword) ||
+        item.subtitle.toLowerCase().includes(keyword) ||
+        item.categoryName.toLowerCase().includes(keyword) ||
+        item.tags.some(tag => tag.toLowerCase().includes(keyword))
+      )
+      : source
+
     const clothingList = await resolveCloudUrls(filtered)
+    this.setData({ clothingList: this.decorateItems(clothingList) })
+  },
+
+  async onClearSearch() {
+    const clothingList = await resolveCloudUrls(data.getByCategory(this.data.activeCategory))
     this.setData({
-      clothingList: clothingList.map(item => ({
-        ...item,
-        liked: favorites.includes(item.id)
-      }))
+      searchKeyword: '',
+      clothingList: this.decorateItems(clothingList)
     })
   },
 
   onBannerTap(e) {
     const bannerId = e.currentTarget.dataset.id
-    const banner = data.banners.find(b => b.id === bannerId)
-    if (banner) {
-      const clothing = data.clothingList.find(c => c.name === banner.title)
-      if (clothing) {
-        wx.navigateTo({
-          url: `/pages/detail/detail?id=${clothing.id}`
-        })
-      }
+    const banner = data.banners.find(item => item.id === bannerId)
+    const clothing = banner ? data.clothingList.find(item => item.name === banner.title) : null
+
+    if (clothing) {
+      wx.navigateTo({ url: `/pages/detail/detail?id=${clothing.id}` })
     }
   },
 
   onClothingTap(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: `/pages/detail/detail?id=${id}`
-    })
+    const id = e.detail.id || e.currentTarget.dataset.id
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` })
+  },
+
+  onSelectionChange() {
+    this.syncItemStates()
+  },
+
+  onLikeChange() {
+    this.syncItemStates()
+  },
+
+  goSelection() {
+    wx.switchTab({ url: '/pages/selection/selection' })
+  },
+
+  goGallery() {
+    wx.navigateTo({ url: '/pages/gallery/gallery' })
   }
 })

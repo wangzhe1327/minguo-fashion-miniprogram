@@ -1,0 +1,95 @@
+<view class="container gallery-page">
+  <view class="page-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="back-btn" bindtap="goBack">
+      <text>‹</text>
+    </view>
+    <view class="title-wrap">
+      <text class="page-title">摄影取片</text>
+      <text class="page-subtitle">预览、保存、提交精修</text>
+    </view>
+    <view class="header-space"></view>
+  </view>
+
+  <view class="code-panel">
+    <text class="panel-label">取片码</text>
+    <view class="code-row">
+      <input
+        class="code-input"
+        type="text"
+        maxlength="32"
+        placeholder="请输入摄影师提供的取片码"
+        value="{{pickupCode}}"
+        bindinput="onCodeInput"
+        confirm-type="search"
+        bindconfirm="searchAlbum"
+      />
+      <view class="search-btn {{loading ? 'disabled' : ''}}" bindtap="searchAlbum">
+        <text>{{loading ? '读取中' : '查询'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="album-panel" wx:if="{{album}}">
+    <view class="album-head">
+      <view class="album-title-wrap">
+        <text class="album-title">{{album.title}}</text>
+        <text class="album-meta">{{album.shootDate || '日期待确认'}} · {{album.photographer || '摄影师待确认'}}</text>
+      </view>
+      <view class="photo-count">
+        <text>{{photos.length}} 张</text>
+      </view>
+    </view>
+    <text class="album-notice" wx:if="{{album.notice}}">{{album.notice}}</text>
+  </view>
+
+  <view class="toolbar" wx:if="{{photos.length > 0}}">
+    <view class="toolbar-btn" bindtap="toggleAll">
+      <text>{{selectedIds.length === photos.length ? '取消全选' : '全选'}}</text>
+    </view>
+    <text class="toolbar-count">已选 {{selectedIds.length}} 张</text>
+  </view>
+
+  <view class="photo-grid" wx:if="{{photos.length > 0}}">
+    <view class="photo-card" wx:for="{{photos}}" wx:key="id">
+      <view class="photo-wrap" bindtap="previewPhoto" data-url="{{item.displayUrl}}">
+        <image class="photo-img" src="{{item.displayUrl}}" mode="aspectFill" />
+        <view class="select-dot {{item.selected ? 'selected' : ''}}" catchtap="togglePhoto" data-id="{{item.id}}">
+          <text>{{item.selected ? '✓' : ''}}</text>
+        </view>
+        <view class="retouch-badge" wx:if="{{item.retouched}}">
+          <text>精修</text>
+        </view>
+      </view>
+      <view class="photo-info">
+        <text class="photo-name">{{item.name}}</text>
+        <view class="save-one" catchtap="saveOne" data-id="{{item.id}}">
+          <text>保存</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{!album && !loading}}">
+    <text class="empty-title">输入取片码</text>
+    <text class="empty-subtitle">成片从云端读取，不占用小程序主包空间。保存原片或提交精修都从这里开始。</text>
+  </view>
+
+  <view class="empty-state" wx:if="{{album && photos.length === 0}}">
+    <text class="empty-title">相册暂无照片</text>
+    <text class="empty-subtitle">请联系摄影师确认上传状态</text>
+  </view>
+
+  <view class="bottom-bar" wx:if="{{photos.length > 0}}">
+    <view class="progress-text">
+      <text>{{progressText || '选择照片后可保存原片或提交精修'}}</text>
+    </view>
+    <view class="retouch-selected" bindtap="goRetouch">
+      <text>精修特效</text>
+    </view>
+    <view class="save-selected {{saving ? 'disabled' : ''}}" bindtap="saveSelected">
+      <text>{{saving ? '保存中' : '保存选中'}}</text>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

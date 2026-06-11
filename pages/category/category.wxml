@@ -1,30 +1,47 @@
-<view class="container">
+<view class="container category-page">
   <view class="page-header" style="padding-top: {{statusBarHeight}}px;">
     <text class="page-title">服装分类</text>
+    <view class="header-action" bindtap="goSelection">
+      <text>{{selectionCount}} 款</text>
+    </view>
   </view>
 
   <view class="category-layout">
-    <!-- 左侧分类导航 -->
     <scroll-view class="left-nav" scroll-y="true">
-      <view wx:for="{{categories}}" wx:key="id" class="nav-item {{activeCategory === item.id ? 'active' : ''}}" bindtap="onCategoryTap" data-id="{{item.id}}">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="nav-item {{activeCategory === item.id ? 'active' : ''}}"
+        bindtap="onCategoryTap"
+        data-id="{{item.id}}"
+      >
         <text>{{item.name}}</text>
       </view>
     </scroll-view>
 
-    <!-- 右侧服装列表 -->
     <scroll-view class="right-content" scroll-y="true">
       <view class="category-info">
-        <image class="category-banner" src="{{currentBanner}}" mode="aspectFill"/>
-        <text class="category-desc">{{currentDesc}}</text>
+        <image class="category-banner" src="{{currentBanner}}" mode="aspectFill" />
+        <view class="category-copy">
+          <text class="category-desc">{{currentDesc}}</text>
+          <text class="category-count">{{clothingList.length}} 款</text>
+        </view>
       </view>
 
       <view class="clothing-list">
-        <clothing-card wx:for="{{clothingList}}" wx:key="id" item="{{item}}" bind:tap="onClothingTap" data-id="{{item.id}}"/>
+        <clothing-card
+          wx:for="{{clothingList}}"
+          wx:key="id"
+          item="{{item}}"
+          bind:tap="onClothingTap"
+          bind:selectchange="onSelectionChange"
+          bind:likechange="onLikeChange"
+        />
       </view>
 
       <view class="empty-state" wx:if="{{clothingList.length === 0}}">
-        <text class="empty-icon">👗</text>
-        <text class="empty-text">该分类暂无服装</text>
+        <text class="empty-title">该分类暂无服装</text>
+        <text class="empty-subtitle">可以先看看其他分类</text>
       </view>
     </scroll-view>
   </view>

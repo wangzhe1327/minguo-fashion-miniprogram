@@ -3,13 +3,15 @@
     "pages/index/index",
     "pages/category/category",
     "pages/detail/detail",
-    "pages/tryon/tryon",
+    "pages/gallery/gallery",
+    "pages/retouch/retouch",
+    "pages/selection/selection",
     "pages/profile/profile"
   ],
   "tabBar": {
-    "color": "#8B8B8B",
-    "selectedColor": "#8B4513",
-    "backgroundColor": "#F5F0E8",
+    "color": "#8A8177",
+    "selectedColor": "#7C3F22",
+    "backgroundColor": "#F8F3EA",
     "borderStyle": "white",
     "list": [
       {
@@ -25,10 +27,10 @@
         "selectedIconPath": "images/tab_category_active.png"
       },
       {
-        "pagePath": "pages/tryon/tryon",
-        "text": "试穿",
-        "iconPath": "images/tab_tryon.png",
-        "selectedIconPath": "images/tab_tryon_active.png"
+        "pagePath": "pages/selection/selection",
+        "text": "清单",
+        "iconPath": "images/tab_selection.png",
+        "selectedIconPath": "images/tab_selection_active.png"
       },
       {
         "pagePath": "pages/profile/profile",
@@ -40,7 +42,7 @@
   },
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F5F0E8",
+    "navigationBarBackgroundColor": "#F8F3EA",
     "navigationBarTitleText": "锦衣旧梦",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"

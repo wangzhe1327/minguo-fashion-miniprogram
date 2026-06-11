@@ -1,0 +1,189 @@
+<view class="container retouch-page">
+  <view class="page-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="title-wrap">
+      <text class="page-title">精修特效</text>
+      <text class="page-subtitle">商业级成片优化服务</text>
+    </view>
+    <view class="history-btn" bindtap="loadOrders">
+      <text>{{ordersLoading ? '刷新中' : '刷新'}}</text>
+    </view>
+  </view>
+
+  <view class="intro-panel">
+    <text class="intro-title">从取片相册选择照片后提交需求</text>
+    <text class="intro-desc">支持人像精修、服饰质感、背景整理、复古胶片和电影感特效。提交后会进入云端订单队列，后续可接人工精修或 AI 处理服务。</text>
+  </view>
+
+  <view class="draft-panel" wx:if="{{photos.length > 0}}">
+    <view class="section-head">
+      <view>
+        <text class="section-title">待处理照片</text>
+        <text class="section-subtitle">{{photos.length}} 张 · {{draft.albumTitle || '取片相册'}}</text>
+      </view>
+      <view class="change-btn" bindtap="goGallery">
+        <text>重选</text>
+      </view>
+    </view>
+    <scroll-view class="photo-scroll" scroll-x="true" show-scrollbar="false">
+      <view class="photo-list">
+        <image
+          wx:for="{{photos}}"
+          wx:key="id"
+          class="draft-photo"
+          src="{{item.displayUrl}}"
+          mode="aspectFill"
+          bindtap="previewDraftPhoto"
+          data-url="{{item.displayUrl}}"
+        />
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="empty-draft" wx:else>
+    <text class="empty-title">还没有选择照片</text>
+    <text class="empty-subtitle">请先进入摄影取片，勾选需要精修或加特效的照片。</text>
+    <view class="empty-action" bindtap="goGallery">
+      <text>去选择照片</text>
+    </view>
+  </view>
+
+  <view class="section-block">
+    <view class="section-head">
+      <text class="section-title">选择精修套餐</text>
+      <text class="section-subtitle">按照片数量计费</text>
+    </view>
+    <view class="package-list">
+      <view
+        wx:for="{{packages}}"
+        wx:key="id"
+        class="package-card {{packageId === item.id ? 'active' : ''}}"
+        bindtap="selectPackage"
+        data-id="{{item.id}}"
+      >
+        <view class="package-top">
+          <text class="package-name">{{item.name}}</text>
+          <text class="package-tag">{{item.tag}}</text>
+        </view>
+        <text class="package-price">¥{{item.price}}/{{item.unit}}</text>
+        <text class="package-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-block">
+    <view class="section-head">
+      <text class="section-title">选择特效风格</text>
+      <text class="section-subtitle">可按备注继续细调</text>
+    </view>
+    <view class="effect-list">
+      <view
+        wx:for="{{effects}}"
+        wx:key="id"
+        class="effect-card {{effectId === item.id ? 'active' : ''}}"
+        bindtap="selectEffect"
+        data-id="{{item.id}}"
+      >
+        <view class="effect-color" style="background: {{item.color}};"></view>
+        <view class="effect-copy">
+          <text class="effect-name">{{item.name}}</text>
+          <text class="effect-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-block">
+    <view class="section-head">
+      <text class="section-title">效果强度</text>
+      <text class="section-subtitle">{{intensity}}%</text>
+    </view>
+    <slider value="{{intensity}}" min="0" max="100" step="5" activeColor="#2F6D62" backgroundColor="#E7DCCE" block-color="#2F6D62" block-size="22" bindchange="onIntensityChange" />
+  </view>
+
+  <view class="section-block">
+    <view class="section-head">
+      <text class="section-title">交付时效</text>
+      <text class="section-subtitle">加急会自动计入预估费用</text>
+    </view>
+    <view class="delivery-list">
+      <view
+        wx:for="{{deliveries}}"
+        wx:key="id"
+        class="delivery-card {{deliveryId === item.id ? 'active' : ''}}"
+        bindtap="selectDelivery"
+        data-id="{{item.id}}"
+      >
+        <text class="delivery-name">{{item.name}}</text>
+        <text class="delivery-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-panel">
+    <view class="form-row">
+      <text class="form-label">称呼</text>
+      <input class="form-input" placeholder="方便沟通，可选" value="{{form.contactName}}" bindinput="onNameInput" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">联系方式</text>
+      <input class="form-input" placeholder="手机号或微信号，可选" value="{{form.contactPhone}}" bindinput="onPhoneInput" />
+    </view>
+    <view class="remark-box">
+      <text class="form-label">修图要求</text>
+      <textarea class="remark-input" maxlength="300" placeholder="例如：保留自然肤质、不要过度瘦脸、背景杂物清理、做民国海报感..." value="{{form.remark}}" bindinput="onRemarkInput" />
+    </view>
+  </view>
+
+  <view class="terms-row" bindtap="toggleTerms">
+    <view class="checkbox {{acceptedTerms ? 'checked' : ''}}">
+      <text>{{acceptedTerms ? '✓' : ''}}</text>
+    </view>
+    <text class="terms-text">我确认所选照片可用于本次修图处理，并理解最终交付需由店家确认排期和费用。</text>
+  </view>
+
+  <view class="submit-panel">
+    <view class="amount-box">
+      <text class="amount-label">预估费用</text>
+      <text class="amount-value">¥{{amount}}</text>
+    </view>
+    <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="submitOrder">
+      <text>{{submitting ? '提交中' : '提交精修需求'}}</text>
+    </view>
+  </view>
+
+  <view class="orders-section">
+    <view class="section-head">
+      <text class="section-title">我的精修订单</text>
+      <text class="section-subtitle">{{orders.length}} 单</text>
+    </view>
+
+    <view class="order-card" wx:for="{{orders}}" wx:key="id">
+      <view class="order-head">
+        <view>
+          <text class="order-no">{{item.orderNo}}</text>
+          <text class="order-meta">{{item.packageName}} · {{item.effectName}} · {{item.photos.length}} 张</text>
+        </view>
+        <view class="status-badge" style="background: {{item.statusColor}};">
+          <text>{{item.statusText}}</text>
+        </view>
+      </view>
+      <view class="order-line">
+        <text>预估费用 ¥{{item.amount}}</text>
+        <text>{{item.deliveryName}}</text>
+      </view>
+      <scroll-view class="result-scroll" scroll-x="true" show-scrollbar="false" wx:if="{{item.resultPhotos.length > 0}}">
+        <view class="result-list">
+          <view class="result-item" wx:for="{{item.resultPhotos}}" wx:key="id" wx:for-item="photo">
+            <image class="result-img" src="{{photo.displayUrl}}" mode="aspectFill" bindtap="previewResult" data-url="{{photo.displayUrl}}" data-order-id="{{item.id}}" />
+            <view class="result-save" catchtap="saveResult" data-order-id="{{item.id}}" data-photo-id="{{photo.id}}">
+              <text>保存</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <text class="order-tip" wx:else>成片交付后会在这里显示，可预览并保存到相册。</text>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

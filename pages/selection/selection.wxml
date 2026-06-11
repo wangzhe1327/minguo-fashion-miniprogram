@@ -1,0 +1,102 @@
+<view class="container selection-page">
+  <view class="page-header" style="padding-top: {{statusBarHeight}}px;">
+    <view>
+      <text class="page-title">选款清单</text>
+      <text class="page-subtitle">整理给店家的咨询单</text>
+    </view>
+    <view class="clear-btn" bindtap="clearAll" wx:if="{{items.length > 0}}">
+      <text>清空</text>
+    </view>
+  </view>
+
+  <view class="summary-panel">
+    <view class="summary-item">
+      <text class="summary-num">{{summary.count}}</text>
+      <text class="summary-label">已选款式</text>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item wide">
+      <text class="summary-num small">{{summary.totalText}}</text>
+      <text class="summary-label">预估金额</text>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item wide">
+      <text class="summary-num small">{{summary.categoriesText}}</text>
+      <text class="summary-label">涵盖分类</text>
+    </view>
+  </view>
+
+  <view class="form-panel">
+    <view class="form-row">
+      <text class="form-label">用途场景</text>
+      <picker value="{{sceneIndex}}" range="{{scenes}}" bindchange="onSceneChange">
+        <view class="form-value">
+          <text>{{form.scene}}</text>
+        </view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">使用日期</text>
+      <picker mode="date" value="{{form.date}}" bindchange="onDateChange">
+        <view class="form-value">
+          <text>{{form.date || '待确定'}}</text>
+        </view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">人数/件数</text>
+      <input class="form-input" type="number" placeholder="例如 2" value="{{form.people}}" bindinput="onPeopleInput" />
+    </view>
+    <view class="remark-box">
+      <text class="form-label">备注</text>
+      <textarea
+        class="remark-input"
+        placeholder="尺码、颜色、拍摄主题、是否需要配饰等"
+        maxlength="120"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+  </view>
+
+  <view class="section-head">
+    <text class="section-title">已选服装</text>
+    <text class="section-count">{{items.length}} 款</text>
+  </view>
+
+  <view class="selected-list" wx:if="{{items.length > 0}}">
+    <view class="selected-item" wx:for="{{items}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+      <image class="selected-img" src="{{item.image}}" mode="aspectFill" />
+      <view class="selected-info">
+        <text class="selected-name">{{item.name}}</text>
+        <text class="selected-desc">{{item.subtitle}}</text>
+        <view class="selected-meta">
+          <text class="selected-price">{{item.price}}</text>
+          <text class="selected-category">{{item.categoryName}}</text>
+        </view>
+      </view>
+      <view class="remove-btn" catchtap="removeItem" data-id="{{item.id}}">
+        <text>移出</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{items.length === 0}}">
+    <text class="empty-title">清单还是空的</text>
+    <text class="empty-subtitle">在首页或详情页把想咨询的款式加入清单</text>
+    <view class="empty-action" bindtap="goHome">
+      <text>去选款</text>
+    </view>
+  </view>
+
+  <view class="actions">
+    <view class="action-btn secondary" bindtap="goHome">
+      <text>继续选款</text>
+    </view>
+    <view class="action-btn primary" bindtap="copyConsult">
+      <text>复制咨询单</text>
+    </view>
+  </view>
+
+  <view class="safe-bottom"></view>
+</view>

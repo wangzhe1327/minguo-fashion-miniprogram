@@ -1,4 +1,6 @@
 const { clothingImage, resolveCloudUrls } = require('../../utils/cloudAssets.js')
+const { getStatusBarHeight } = require('../../utils/system.js')
+const selection = require('../../utils/selection.js')
 const data = require('../../utils/data.js')
 const app = getApp()
 
@@ -10,10 +12,10 @@ const categoryBanners = {
 }
 
 const categoryDesc = {
-  all: '精选传统服饰，涵盖旗袍、童装、汉服，展现东方美学。',
-  qipao: '旗袍——东方女性的经典之美。修身剪裁，盘扣点缀，尽显优雅身姿。',
-  tongzhuang: '童装——传承之美从小开始。儿童西装、旗袍、连衣裙，精致可爱。',
-  hanfu: '汉服——华夏衣冠，礼仪之邦。马面裙、新中式套装，古典优雅。'
+  all: '精选民国风与传统服饰，适合写真、演出、亲子和日常主题搭配。',
+  qipao: '旗袍线条利落，适合复古写真、晚宴和精致中式造型。',
+  tongzhuang: '童装以舒适和上镜为重点，适合亲子照、节日活动和学生主题。',
+  hanfu: '汉服与新中式款更适合礼仪、活动、国风拍摄和文艺场景。'
 }
 
 Page({
@@ -23,55 +25,75 @@ Page({
     clothingList: [],
     activeCategory: 'all',
     currentBanner: '',
-    currentDesc: categoryDesc.all
+    currentDesc: categoryDesc.all,
+    selectionCount: 0
   },
 
   async onLoad() {
-    const sysInfo = wx.getSystemInfoSync()
     const currentBanner = await resolveCloudUrls(categoryBanners.all)
     const clothingList = await resolveCloudUrls(data.clothingList)
+
     this.setData({
-      statusBarHeight: sysInfo.statusBarHeight,
+      statusBarHeight: getStatusBarHeight(),
       categories: data.categories,
       currentBanner,
-      clothingList
+      clothingList: this.decorateItems(clothingList),
+      selectionCount: selection.getSelectionList().length
     })
   },
 
   onShow() {
-    this.updateFavorites()
+    this.syncItemStates()
   },
 
-  updateFavorites() {
-    const favorites = app.globalData.favorites
-    const clothingList = this.data.clothingList.map(item => ({
+  decorateItems(items) {
+    const favorites = app.globalData.favorites || []
+    const selectedIds = selection.getSelectionList()
+
+    return (items || []).map(item => ({
       ...item,
-      liked: favorites.includes(item.id)
+      liked: favorites.includes(item.id),
+      selected: selectedIds.includes(item.id)
     }))
-    this.setData({ clothingList })
+  },
+
+  syncItemStates() {
+    if (!this.data.clothingList.length) return
+
+    this.setData({
+      clothingList: this.decorateItems(this.data.clothingList),
+      selectionCount: selection.getSelectionList().length
+    })
   },
 
   async onCategoryTap(e) {
     const id = e.currentTarget.dataset.id
     const currentBanner = await resolveCloudUrls(categoryBanners[id] || categoryBanners.all)
     const clothingList = await resolveCloudUrls(data.getByCategory(id))
-    const favorites = app.globalData.favorites
 
     this.setData({
       activeCategory: id,
       currentBanner,
       currentDesc: categoryDesc[id] || categoryDesc.all,
-      clothingList: clothingList.map(item => ({
-        ...item,
-        liked: favorites.includes(item.id)
-      }))
+      clothingList: this.decorateItems(clothingList),
+      selectionCount: selection.getSelectionList().length
     })
   },
 
   onClothingTap(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: `/pages/detail/detail?id=${id}`
-    })
+    const id = e.detail.id || e.currentTarget.dataset.id
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` })
+  },
+
+  onSelectionChange() {
+    this.syncItemStates()
+  },
+
+  onLikeChange() {
+    this.syncItemStates()
+  },
+
+  goSelection() {
+    wx.switchTab({ url: '/pages/selection/selection' })
   }
 })

@@ -3,6 +3,7 @@ const cloudAssets = require('./utils/cloudAssets.js')
 App({
   globalData: {
     favorites: [],
+    selectionList: [],
     userInfo: null
   },
 
@@ -11,5 +12,7 @@ App({
 
     const favorites = wx.getStorageSync('favorites') || []
     this.globalData.favorites = favorites
+    this.globalData.selectionList = wx.getStorageSync('selectionList') || []
+    this.globalData.userInfo = wx.getStorageSync('userInfo') || null
   }
 })

@@ -1,15 +1,38 @@
 <view class="card" bindtap="onTap">
   <view class="card-image-wrap">
-    <image class="card-image" src="{{item.image}}" mode="aspectFill" lazy-load="true"/>
+    <view class="image-skeleton">
+      <text wx:if="{{imageError || !item.image}}">暂无图片</text>
+    </view>
+    <image
+      wx:if="{{item.image && !imageError}}"
+      class="card-image"
+      src="{{item.image}}"
+      mode="aspectFill"
+      lazy-load="true"
+      binderror="onImageError"
+    />
     <view class="like-btn" catchtap="onLikeTap">
-      <text class="like-icon {{isLiked ? 'liked' : ''}}">♥</text>
+      <text class="like-icon {{isLiked ? 'liked' : ''}}">{{isLiked ? '♥' : '♡'}}</text>
+    </view>
+    <view class="selected-badge" wx:if="{{isSelected}}">
+      <text>已选</text>
     </view>
   </view>
+
   <view class="card-info">
     <text class="card-name">{{item.name}}</text>
     <text class="card-desc">{{item.subtitle}}</text>
-    <view class="card-action">
-      <text class="view-btn">查看</text>
+    <view class="card-meta">
+      <text class="card-price">{{item.price}}</text>
+      <text class="card-category">{{item.categoryName}}</text>
+    </view>
+    <view class="card-actions">
+      <view class="card-btn ghost" catchtap="onTap">
+        <text>查看</text>
+      </view>
+      <view class="card-btn primary {{isSelected ? 'selected' : ''}}" catchtap="onSelectTap">
+        <text>{{isSelected ? '已加入' : '加入'}}</text>
+      </view>
     </view>
   </view>
 </view>
