@@ -1,5 +1,8 @@
 <view class="container retouch-page">
   <view class="page-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="back-btn" bindtap="goBack">
+      <text>‹</text>
+    </view>
     <view class="title-wrap">
       <text class="page-title">精修特效</text>
       <text class="page-subtitle">商业级成片优化服务</text>

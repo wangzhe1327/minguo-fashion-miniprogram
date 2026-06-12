@@ -151,6 +151,10 @@ Page({
     wx.navigateTo({ url: '/pages/gallery/gallery' })
   },
 
+  goBack() {
+    wx.navigateBack({ delta: 1 })
+  },
+
   async submitOrder() {
     if (this.data.submitting) return
 
