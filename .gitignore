@@ -18,3 +18,11 @@ Thumbs.db
 miniprogram_npm/
 .temp/
 .cache/
+
+# Local AI worker runtime
+backend/retouch-worker/.env
+backend/retouch-worker/.venv/
+backend/retouch-worker/models/
+backend/retouch-worker/gfpgan/weights/
+backend/retouch-worker/logs/
+backend/retouch-worker/**/__pycache__/

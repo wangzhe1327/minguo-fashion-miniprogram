@@ -1,7 +1,6 @@
 -r requirements.txt
-# Choose the torch build that matches your CUDA runtime before installing these.
-# Example for CUDA 12.1:
-# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# Install torch/torchvision first with the CUDA wheel selected from:
+# https://pytorch.org/get-started/locally/
 gfpgan==1.3.8
 realesrgan==0.3.0
 basicsr==1.4.2

@@ -1,12 +1,27 @@
 from __future__ import annotations
 
 import os
+import sys
+import types
 from functools import lru_cache
 
 import cv2
 import numpy as np
 
 from .settings import settings
+
+
+def install_torchvision_compat() -> None:
+    if "torchvision.transforms.functional_tensor" in sys.modules:
+        return
+    try:
+        from torchvision.transforms import functional as functional
+    except Exception:
+        return
+
+    compat = types.ModuleType("torchvision.transforms.functional_tensor")
+    compat.rgb_to_grayscale = functional.rgb_to_grayscale
+    sys.modules["torchvision.transforms.functional_tensor"] = compat
 
 
 class OptionalModels:
@@ -23,6 +38,7 @@ class OptionalModels:
         if not os.path.exists(settings.gfpgan_model):
             return
         try:
+            install_torchvision_compat()
             from gfpgan import GFPGANer
 
             self.gfpgan = GFPGANer(
@@ -43,6 +59,7 @@ class OptionalModels:
         if not os.path.exists(settings.realesrgan_model):
             return
         try:
+            install_torchvision_compat()
             from basicsr.archs.rrdbnet_arch import RRDBNet
             from realesrgan import RealESRGANer
 

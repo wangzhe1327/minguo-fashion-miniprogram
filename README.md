@@ -148,6 +148,12 @@ utils/retouchConfig.js
 backend/retouch-worker
 ```
 
+如果要把当前 Windows 电脑配置成本机服务器，按这份文档操作：
+
+```text
+backend/retouch-worker/LOCAL_WINDOWS_SERVER.md
+```
+
 默认使用 OpenCV + Pillow 完成白平衡、局部对比、自然磨皮、锐化、复古胶片、柔光、电影感、旧照颗粒等处理。部署 GPU 环境后，可启用：
 
 - GFPGAN：人脸修复和面部细节增强，Apache-2.0。
