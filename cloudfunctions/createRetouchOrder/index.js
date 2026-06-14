@@ -15,10 +15,10 @@ const packages = {
 
 const effects = {
   natural: '自然通透',
-  'minguo-film': '民国胶片',
+  'minguo-film': '风华民国',
   'soft-light': '柔光肤感',
-  cinematic: '电影暗调',
-  'old-photo': '旧照颗粒'
+  cinematic: '高级暗调',
+  'old-photo': '雅致画报'
 }
 
 const deliveries = {
@@ -113,7 +113,7 @@ exports.main = async event => {
     statusLogs: [
       {
         status: 'submitted',
-        text: '用户提交精修特效需求',
+        text: '用户提交精修与风格需求',
         createdAt: now
       }
     ]

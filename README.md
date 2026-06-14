@@ -161,13 +161,10 @@ backend/retouch-worker/LOCAL_WINDOWS_SERVER.md
 
 启动方式：
 
-```bash
+```powershell
 cd backend/retouch-worker
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-copy .env.example .env
-uvicorn app.main:app --host 0.0.0.0 --port 8080
+powershell -ExecutionPolicy Bypass -File scripts\setup-windows.ps1
+powershell -ExecutionPolicy Bypass -File scripts\start-worker.ps1 -Background
 ```
 
 Docker：

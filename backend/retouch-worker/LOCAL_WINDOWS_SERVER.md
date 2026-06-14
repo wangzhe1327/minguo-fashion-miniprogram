@@ -36,6 +36,14 @@
 
 模型文件和 `.env` 都已加入 `.gitignore`，不要上传到 GitHub。
 
+Python 虚拟环境已放在项目目录外：
+
+```text
+C:\Users\wz\AppData\Local\MinguoRetouchWorker\.venv
+```
+
+不要在小程序项目内重新创建 `backend/retouch-worker/.venv`，否则微信开发者工具预览时可能再次因为文件过多触发 `EMFILE`。
+
 ## 常用命令
 
 进入目录：

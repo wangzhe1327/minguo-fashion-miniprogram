@@ -119,10 +119,24 @@ def color_grade(bgr: np.ndarray, effect_id: str, intensity: float) -> np.ndarray
     if effect_id == "natural":
         image = image * (1.0 + 0.04 * intensity)
     elif effect_id == "minguo-film":
-        image[..., 2] *= 1.08 + 0.08 * intensity
-        image[..., 1] *= 1.02
-        image[..., 0] *= 0.92
-        image = image * (0.96 + 0.02 * intensity) + 8 * intensity
+        # A polished Republic-era portrait look: clear skin, restrained warmth,
+        # soft highlights, and no heavy yellow "old photo" cast.
+        source = np.clip(image, 0, 255).astype(np.uint8)
+        lab = cv2.cvtColor(source, cv2.COLOR_BGR2LAB).astype(np.float32)
+        l_channel, a_channel, b_channel = cv2.split(lab)
+        l_channel = (l_channel - 128) * (1.02 + 0.05 * intensity) + 128 + 3.5 * intensity
+        a_channel = a_channel + 1.2 * intensity
+        b_channel = b_channel + 0.5 * intensity
+        graded = cv2.cvtColor(
+            np.clip(cv2.merge((l_channel, a_channel, b_channel)), 0, 255).astype(np.uint8),
+            cv2.COLOR_LAB2BGR,
+        ).astype(np.float32)
+        image = cv2.addWeighted(image, 0.42, graded, 0.58, 0)
+        image[..., 2] *= 1.015 + 0.025 * intensity
+        image[..., 1] *= 1.005
+        image[..., 0] *= 0.985
+        bloom = cv2.GaussianBlur(image, (0, 0), 6)
+        image = cv2.addWeighted(image, 1.0, bloom, 0.035 + 0.045 * intensity, 0)
     elif effect_id == "soft-light":
         image[..., 2] *= 1.04 + 0.04 * intensity
         image[..., 0] *= 0.96
@@ -161,9 +175,12 @@ def process_bgr(bgr: np.ndarray, request: ProcessRequest) -> tuple[np.ndarray, l
 
     image = color_grade(image, request.effectId, intensity)
 
-    if request.effectId in ("minguo-film", "old-photo"):
-        image = add_grain(image, amount=0.35 + 0.45 * intensity)
-        image = add_vignette(image, strength=0.16 + 0.18 * intensity)
+    if request.effectId == "minguo-film":
+        image = add_grain(image, amount=0.06 + 0.08 * intensity)
+        image = add_vignette(image, strength=0.05 + 0.06 * intensity)
+    elif request.effectId == "old-photo":
+        image = add_grain(image, amount=0.18 + 0.22 * intensity)
+        image = add_vignette(image, strength=0.10 + 0.12 * intensity)
     elif request.effectId == "cinematic":
         image = add_vignette(image, strength=0.22 + 0.18 * intensity)
 

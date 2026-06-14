@@ -1,12 +1,20 @@
 param(
   [switch]$Gpu,
   [string]$PythonCommand = "py -3.11",
-  [string]$TorchIndexUrl = "https://download.pytorch.org/whl/cu128"
+  [string]$TorchIndexUrl = "https://download.pytorch.org/whl/cu128",
+  [string]$VenvPath = ""
 )
 
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
+
+if (!$VenvPath) {
+  $VenvPath = Join-Path $env:LOCALAPPDATA "MinguoRetouchWorker\.venv"
+}
+$VenvPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($VenvPath)
+$VenvParent = Split-Path $VenvPath -Parent
+New-Item -ItemType Directory -Force $VenvParent | Out-Null
 
 function Invoke-Python {
   param([string[]]$Arguments)
@@ -19,11 +27,11 @@ function Invoke-Python {
   & $exe @prefixArgs @Arguments
 }
 
-if (!(Test-Path ".venv")) {
-  Invoke-Python @("-m", "venv", ".venv")
+if (!(Test-Path $VenvPath)) {
+  Invoke-Python @("-m", "venv", $VenvPath)
 }
 
-$Python = Join-Path $Root ".venv\Scripts\python.exe"
+$Python = Join-Path $VenvPath "Scripts\python.exe"
 & $Python -m pip install --upgrade pip wheel setuptools
 
 if ($Gpu) {
@@ -39,4 +47,5 @@ if (!(Test-Path ".env")) {
 }
 
 Write-Host "Setup completed."
+Write-Host "Virtual environment: $VenvPath"
 Write-Host "Start server: powershell -ExecutionPolicy Bypass -File scripts\start-worker.ps1"

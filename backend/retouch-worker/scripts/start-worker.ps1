@@ -1,14 +1,19 @@
 param(
   [int]$Port = 8080,
   [string]$HostAddress = "0.0.0.0",
-  [switch]$Background
+  [switch]$Background,
+  [string]$VenvPath = ""
 )
 
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
 
-$Python = Join-Path $Root ".venv\Scripts\python.exe"
+if (!$VenvPath) {
+  $VenvPath = Join-Path $env:LOCALAPPDATA "MinguoRetouchWorker\.venv"
+}
+$VenvPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($VenvPath)
+$Python = Join-Path $VenvPath "Scripts\python.exe"
 if (!(Test-Path $Python)) {
   throw "Virtual environment not found. Run scripts\setup-windows.ps1 first."
 }
