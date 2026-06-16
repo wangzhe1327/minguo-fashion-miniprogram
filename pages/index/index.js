@@ -4,6 +4,22 @@ const { getStatusBarHeight } = require('../../utils/system.js')
 const selection = require('../../utils/selection.js')
 const app = getApp()
 
+function toCardItem(item) {
+  return {
+    id: item.id,
+    name: item.name,
+    category: item.category,
+    categoryName: item.categoryName,
+    subtitle: item.subtitle,
+    image: item.image,
+    price: item.price
+  }
+}
+
+function toCardItems(items) {
+  return (items || []).map(toCardItem)
+}
+
 Page({
   data: {
     statusBarHeight: 44,
@@ -13,20 +29,40 @@ Page({
     activeCategory: 'all',
     currentCategoryName: '精选',
     searchKeyword: '',
-    selectionCount: 0
+    selectionCount: 0,
+    isLoadingAssets: true
   },
 
-  async onLoad() {
-    const banners = await resolveCloudUrls(data.banners)
-    const clothingList = await resolveCloudUrls(data.clothingList)
-
+  onLoad() {
     this.setData({
       statusBarHeight: getStatusBarHeight(),
       categories: data.categories,
-      banners,
-      clothingList: this.decorateItems(clothingList),
-      selectionCount: selection.getSelectionList().length
+      selectionCount: selection.getSelectionList().length,
+      isLoadingAssets: true
     })
+
+    this.loadHomeAssets()
+  },
+
+  async loadHomeAssets() {
+    try {
+      const resolved = await resolveCloudUrls({
+        banners: data.banners,
+        clothingList: toCardItems(data.clothingList)
+      })
+
+      this.setData({
+        banners: resolved.banners || [],
+        clothingList: this.decorateItems(resolved.clothingList),
+        isLoadingAssets: false
+      })
+    } catch (err) {
+      console.warn('load home assets failed', err)
+      this.setData({
+        clothingList: this.decorateItems(toCardItems(data.clothingList)),
+        isLoadingAssets: false
+      })
+    }
   },
 
   onShow() {
@@ -56,7 +92,7 @@ Page({
   async onCategoryTap(e) {
     const id = e.currentTarget.dataset.id
     const category = data.categories.find(item => item.id === id)
-    const clothingList = await resolveCloudUrls(data.getByCategory(id))
+    const clothingList = await resolveCloudUrls(toCardItems(data.getByCategory(id)))
 
     this.setData({
       activeCategory: id,
@@ -83,12 +119,12 @@ Page({
       )
       : source
 
-    const clothingList = await resolveCloudUrls(filtered)
+    const clothingList = await resolveCloudUrls(toCardItems(filtered))
     this.setData({ clothingList: this.decorateItems(clothingList) })
   },
 
   async onClearSearch() {
-    const clothingList = await resolveCloudUrls(data.getByCategory(this.data.activeCategory))
+    const clothingList = await resolveCloudUrls(toCardItems(data.getByCategory(this.data.activeCategory)))
     this.setData({
       searchKeyword: '',
       clothingList: this.decorateItems(clothingList)

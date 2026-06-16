@@ -72,7 +72,7 @@
     circular="true"
     indicator-color="rgba(124,63,34,0.22)"
     indicator-active-color="#2F6D62"
-    wx:if="{{activeCategory === 'all' && !searchKeyword}}"
+    wx:if="{{activeCategory === 'all' && !searchKeyword && banners.length > 0}}"
   >
     <swiper-item wx:for="{{banners}}" wx:key="id">
       <view class="banner-item" bindtap="onBannerTap" data-id="{{item.id}}">
@@ -91,7 +91,7 @@
     </swiper-item>
   </swiper>
 
-  <view class="section-head">
+  <view class="section-head" wx:if="{{!isLoadingAssets}}">
     <view>
       <text class="section-title">{{searchKeyword ? '搜索结果' : (activeCategory === 'all' ? '精选推荐' : currentCategoryName)}}</text>
       <text class="section-subtitle">{{clothingList.length}} 款可选</text>
@@ -101,7 +101,7 @@
     </view>
   </view>
 
-  <view class="clothing-grid">
+  <view class="clothing-grid" wx:if="{{!isLoadingAssets}}">
     <clothing-card
       wx:for="{{clothingList}}"
       wx:key="id"
@@ -112,7 +112,7 @@
     />
   </view>
 
-  <view class="empty-state" wx:if="{{clothingList.length === 0}}">
+  <view class="empty-state" wx:if="{{!isLoadingAssets && clothingList.length === 0}}">
     <text class="empty-title">暂无相关服装</text>
     <text class="empty-subtitle">换一个关键词或分类再看看</text>
   </view>

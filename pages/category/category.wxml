@@ -21,14 +21,14 @@
 
     <scroll-view class="right-content" scroll-y="true">
       <view class="category-info">
-        <image class="category-banner" src="{{currentBanner}}" mode="aspectFill" />
+        <image wx:if="{{currentBanner}}" class="category-banner" src="{{currentBanner}}" mode="aspectFill" />
         <view class="category-copy">
           <text class="category-desc">{{currentDesc}}</text>
           <text class="category-count">{{clothingList.length}} 款</text>
         </view>
       </view>
 
-      <view class="clothing-list">
+      <view class="clothing-list" wx:if="{{!isLoadingAssets}}">
         <clothing-card
           wx:for="{{clothingList}}"
           wx:key="id"
@@ -39,7 +39,7 @@
         />
       </view>
 
-      <view class="empty-state" wx:if="{{clothingList.length === 0}}">
+      <view class="empty-state" wx:if="{{!isLoadingAssets && clothingList.length === 0}}">
         <text class="empty-title">该分类暂无服装</text>
         <text class="empty-subtitle">可以先看看其他分类</text>
       </view>

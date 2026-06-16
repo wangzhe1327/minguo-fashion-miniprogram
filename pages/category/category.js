@@ -4,6 +4,22 @@ const selection = require('../../utils/selection.js')
 const data = require('../../utils/data.js')
 const app = getApp()
 
+function toCardItem(item) {
+  return {
+    id: item.id,
+    name: item.name,
+    category: item.category,
+    categoryName: item.categoryName,
+    subtitle: item.subtitle,
+    image: item.image,
+    price: item.price
+  }
+}
+
+function toCardItems(items) {
+  return (items || []).map(toCardItem)
+}
+
 const categoryBanners = {
   all: clothingImage(8),
   qipao: clothingImage(25),
@@ -26,20 +42,54 @@ Page({
     activeCategory: 'all',
     currentBanner: '',
     currentDesc: categoryDesc.all,
-    selectionCount: 0
+    selectionCount: 0,
+    isLoadingAssets: true
   },
 
-  async onLoad() {
-    const currentBanner = await resolveCloudUrls(categoryBanners.all)
-    const clothingList = await resolveCloudUrls(data.clothingList)
-
+  onLoad() {
     this.setData({
       statusBarHeight: getStatusBarHeight(),
       categories: data.categories,
-      currentBanner,
-      clothingList: this.decorateItems(clothingList),
-      selectionCount: selection.getSelectionList().length
+      currentDesc: categoryDesc.all,
+      selectionCount: selection.getSelectionList().length,
+      isLoadingAssets: true
     })
+
+    this.loadCategoryAssets('all')
+  },
+
+  async loadCategoryAssets(id) {
+    const loadToken = (this._categoryLoadToken || 0) + 1
+    this._categoryLoadToken = loadToken
+
+    try {
+      const resolved = await resolveCloudUrls({
+        currentBanner: categoryBanners[id] || categoryBanners.all,
+        clothingList: toCardItems(data.getByCategory(id))
+      })
+
+      if (this._categoryLoadToken !== loadToken) return
+
+      this.setData({
+        activeCategory: id,
+        currentBanner: resolved.currentBanner || '',
+        currentDesc: categoryDesc[id] || categoryDesc.all,
+        clothingList: this.decorateItems(resolved.clothingList),
+        selectionCount: selection.getSelectionList().length,
+        isLoadingAssets: false
+      })
+    } catch (err) {
+      console.warn('load category assets failed', err)
+      if (this._categoryLoadToken !== loadToken) return
+
+      this.setData({
+        activeCategory: id,
+        currentDesc: categoryDesc[id] || categoryDesc.all,
+        clothingList: this.decorateItems(toCardItems(data.getByCategory(id))),
+        selectionCount: selection.getSelectionList().length,
+        isLoadingAssets: false
+      })
+    }
   },
 
   onShow() {
@@ -68,16 +118,14 @@ Page({
 
   async onCategoryTap(e) {
     const id = e.currentTarget.dataset.id
-    const currentBanner = await resolveCloudUrls(categoryBanners[id] || categoryBanners.all)
-    const clothingList = await resolveCloudUrls(data.getByCategory(id))
-
     this.setData({
       activeCategory: id,
-      currentBanner,
       currentDesc: categoryDesc[id] || categoryDesc.all,
-      clothingList: this.decorateItems(clothingList),
-      selectionCount: selection.getSelectionList().length
+      selectionCount: selection.getSelectionList().length,
+      isLoadingAssets: true
     })
+
+    this.loadCategoryAssets(id)
   },
 
   onClothingTap(e) {

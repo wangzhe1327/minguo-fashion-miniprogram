@@ -4,6 +4,18 @@ const { getStatusBarHeight } = require('../../utils/system.js')
 const selection = require('../../utils/selection.js')
 const app = getApp()
 
+function toCardItem(item) {
+  return {
+    id: item.id,
+    name: item.name,
+    category: item.category,
+    categoryName: item.categoryName,
+    subtitle: item.subtitle,
+    image: item.image,
+    price: item.price
+  }
+}
+
 Page({
   data: {
     statusBarHeight: 44,
@@ -25,18 +37,21 @@ Page({
       return
     }
 
-    const item = await resolveCloudUrls(rawItem)
-    const recommendations = await resolveCloudUrls(data.clothingList
+    const resolved = await resolveCloudUrls({
+      item: rawItem,
+      recommendations: data.clothingList
       .filter(clothing => clothing.category === rawItem.category && clothing.id !== rawItem.id)
-      .slice(0, 6))
+      .slice(0, 6)
+      .map(toCardItem)
+    })
 
     this.recordBrowse(rawItem.id)
 
     this.setData({
       statusBarHeight: getStatusBarHeight(),
-      item,
+      item: resolved.item,
       specs: this.parseSpecs(rawItem.detailDesc),
-      recommendations: this.decorateItems(recommendations),
+      recommendations: this.decorateItems(resolved.recommendations),
       styleTips: this.getStyleTips(rawItem),
       isLiked: (app.globalData.favorites || []).includes(rawItem.id),
       isSelected: selection.isSelected(rawItem.id)
