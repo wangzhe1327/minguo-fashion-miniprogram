@@ -11,7 +11,7 @@ Page({
     items: [],
     summary: {
       count: 0,
-      totalText: '待确认',
+      serialsText: '未选择',
       categoriesText: '未选择'
     },
     scenes,

@@ -30,7 +30,7 @@ async function getDemoAlbum() {
     id: 'demo',
     title: '演示取片相册',
     customerName: '体验用户',
-    photographer: '锦衣旧梦摄影师',
+    photographer: '浮光旅影摄影师',
     shootDate: '2026-06-11',
     expireAt: '2026-12-31',
     notice: '真实使用时，请把客户成片上传到云存储并在 photoAlbums 集合中绑定取片码。',

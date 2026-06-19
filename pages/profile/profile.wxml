@@ -8,7 +8,7 @@
       <view class="avatar-wrap">
         <image wx:if="{{userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
         <view class="avatar-placeholder" wx:else>
-          <text>锦</text>
+          <text>浮</text>
         </view>
       </view>
       <view class="user-text">
@@ -92,9 +92,9 @@
     </view>
     <view class="menu-item" bindtap="goToAbout">
       <view class="menu-left">
-        <text class="menu-icon">锦</text>
+        <text class="menu-icon">浮</text>
         <view class="menu-text-wrap">
-          <text class="menu-text">关于锦衣旧梦</text>
+          <text class="menu-text">关于浮光旅影</text>
           <text class="menu-sub">{{totalCount}} 款民国风服装图鉴</text>
         </view>
       </view>

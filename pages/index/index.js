@@ -12,7 +12,7 @@ function toCardItem(item) {
     categoryName: item.categoryName,
     subtitle: item.subtitle,
     image: item.image,
-    price: item.price
+    serialNo: item.serialNo || String(item.id).padStart(2, '0')
   }
 }
 

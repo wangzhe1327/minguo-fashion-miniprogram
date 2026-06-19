@@ -25,7 +25,7 @@
     indicator-active-color="#2F6D62"
   >
     <swiper-item wx:for="{{item.images}}" wx:key="*this">
-      <image class="detail-img" src="{{item}}" mode="aspectFill" />
+      <image class="detail-img" src="{{item}}" mode="aspectFit" />
     </swiper-item>
   </swiper>
 
@@ -35,8 +35,8 @@
         <text class="detail-name">{{item.name}}</text>
         <text class="detail-subtitle">{{item.subtitle}}</text>
       </view>
-      <view class="detail-price">
-        <text>{{item.price}}</text>
+      <view class="detail-serial">
+        <text>序号 {{item.serialNo}}</text>
       </view>
     </view>
 

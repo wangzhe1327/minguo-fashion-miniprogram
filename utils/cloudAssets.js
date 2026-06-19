@@ -2,10 +2,10 @@ const CLOUD_ENV_ID = 'cloud1-d5grlm249e99949fd'
 const CLOUD_FILE_ID_ROOT = 'cloud://cloud1-d5grlm249e99949fd.636c-cloud1-d5grlm249e99949fd-1442266836'
 const CLOUD_FOLDER = 'clo' + 'thes'
 const CLOUD_FILE_ID_PREFIX = `${CLOUD_FILE_ID_ROOT}/${CLOUD_FOLDER}`
-const TEMP_URL_CACHE_KEY = 'cloudAssetTempUrlCache'
+const TEMP_URL_CACHE_KEY = 'cloudAssetTempUrlCacheV3'
 const TEMP_URL_CACHE_TTL = 30 * 60 * 1000
 const LOCAL_IMAGE_CACHE_KEY = 'cloudAssetLocalImageCache'
-const LOCAL_IMAGE_CACHE_VERSION = 1
+const LOCAL_IMAGE_CACHE_VERSION = 3
 const LOCAL_IMAGE_CACHE_DELAY = 1200
 const LOCAL_IMAGE_CACHE_CONCURRENCY = 2
 const MAX_FILE_IDS_PER_BATCH = 50
@@ -250,7 +250,7 @@ function getCachedTempUrl(fileId) {
 }
 
 function getCachedCloudAssetPath(fileId) {
-  return getCachedLocalImage(fileId) || getCachedTempUrl(fileId)
+  return getCachedTempUrl(fileId) || getCachedLocalImage(fileId) || fileId
 }
 
 function initCloud() {
@@ -289,7 +289,7 @@ function collectCloudFileIds(value, fileIds) {
 }
 
 function replaceCloudFileIds(value) {
-  if (isCloudFileId(value)) return getCachedCloudAssetPath(value) || ''
+  if (isCloudFileId(value)) return getCachedCloudAssetPath(value)
   if (Array.isArray(value)) return value.map(item => replaceCloudFileIds(item))
   if (value && typeof value === 'object') {
     const next = {}
@@ -358,7 +358,7 @@ async function resolveCloudUrls(value) {
   const fileIds = []
   collectCloudFileIds(value, fileIds)
   const uniqueFileIds = Array.from(new Set(fileIds))
-  const unresolved = uniqueFileIds.filter(fileId => !getCachedCloudAssetPath(fileId))
+  const unresolved = uniqueFileIds.filter(fileId => !getCachedTempUrl(fileId))
 
   if (!unresolved.length) {
     cacheLocalImagesFromTempCache(uniqueFileIds)

@@ -45,19 +45,15 @@ function clearSelection() {
   return saveSelectionList([])
 }
 
-function parsePrice(price) {
-  const value = String(price || '').replace(/[^\d.]/g, '')
-  return Number(value) || 0
-}
-
 function getSelectionSummary(items) {
   const list = items || []
-  const total = list.reduce((sum, item) => sum + parsePrice(item.price), 0)
+  const serials = list
+    .map(item => item.serialNo || String(item.id).padStart(2, '0'))
+    .filter(Boolean)
   const categories = Array.from(new Set(list.map(item => item.categoryName || item.category).filter(Boolean)))
   return {
     count: list.length,
-    total,
-    totalText: total ? `约 ¥${total}` : '待确认',
+    serialsText: serials.length ? serials.join('、') : '未选择',
     categoriesText: categories.length ? categories.join('、') : '未选择'
   }
 }
@@ -77,7 +73,8 @@ function buildConsultText(items, form) {
   ]
 
   list.forEach((item, index) => {
-    lines.push(`${index + 1}. ${item.name}｜${item.categoryName || item.category || '分类待确认'}｜${item.price || '价格待确认'}`)
+    const serialNo = item.serialNo || String(item.id).padStart(2, '0')
+    lines.push(`${index + 1}. 序号 ${serialNo}｜${item.name}｜${item.categoryName || item.category || '分类待确认'}`)
   })
 
   lines.push('')

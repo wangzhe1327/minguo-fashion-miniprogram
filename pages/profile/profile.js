@@ -93,8 +93,8 @@ Page({
 
   goToAbout() {
     wx.showModal({
-      title: '关于锦衣旧梦',
-      content: '锦衣旧梦专注民国风与传统服饰选款展示，支持收藏、清单汇总和咨询文案整理。',
+      title: '关于浮光旅影',
+      content: '浮光旅影专注民国风与传统服饰选款展示，支持收藏、清单汇总和咨询文案整理。',
       showCancel: false
     })
   },

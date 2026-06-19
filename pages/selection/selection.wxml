@@ -16,8 +16,8 @@
     </view>
     <view class="summary-divider"></view>
     <view class="summary-item wide">
-      <text class="summary-num small">{{summary.totalText}}</text>
-      <text class="summary-label">预估金额</text>
+      <text class="summary-num small">{{summary.serialsText}}</text>
+      <text class="summary-label">序号清单</text>
     </view>
     <view class="summary-divider"></view>
     <view class="summary-item wide">
@@ -71,7 +71,7 @@
         <text class="selected-name">{{item.name}}</text>
         <text class="selected-desc">{{item.subtitle}}</text>
         <view class="selected-meta">
-          <text class="selected-price">{{item.price}}</text>
+          <text class="selected-serial">序号 {{item.serialNo}}</text>
           <text class="selected-category">{{item.categoryName}}</text>
         </view>
       </view>

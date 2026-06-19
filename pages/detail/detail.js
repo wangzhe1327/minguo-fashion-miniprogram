@@ -12,7 +12,7 @@ function toCardItem(item) {
     categoryName: item.categoryName,
     subtitle: item.subtitle,
     image: item.image,
-    price: item.price
+    serialNo: item.serialNo || String(item.id).padStart(2, '0')
   }
 }
 
@@ -97,6 +97,10 @@ Page({
   },
 
   getStyleTips(item) {
+    if (Array.isArray(item.styleTips) && item.styleTips.length) {
+      return item.styleTips
+    }
+
     const common = ['下单前建议确认身高、胸围、腰围和使用日期。']
 
     if (item.category === 'qipao') {

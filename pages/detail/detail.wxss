@@ -68,7 +68,7 @@
   margin: 0 24rpx;
   border-radius: 16rpx;
   overflow: hidden;
-  background: var(--bg-soft);
+  background: linear-gradient(180deg, #F7EFE4 0%, #E8DDD0 100%);
 }
 
 .detail-img {
@@ -109,13 +109,15 @@
   line-height: 1.45;
 }
 
-.detail-price {
+.detail-serial {
   flex-shrink: 0;
-  padding-top: 2rpx;
+  padding: 8rpx 14rpx;
+  border-radius: 8rpx;
+  background: rgba(124, 63, 34, 0.1);
 }
 
-.detail-price text {
-  font-size: 36rpx;
+.detail-serial text {
+  font-size: 24rpx;
   font-weight: 800;
   color: var(--accent);
 }

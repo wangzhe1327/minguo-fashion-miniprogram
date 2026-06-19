@@ -3,11 +3,14 @@
     <view class="nav-content">
       <view class="brand">
         <view class="brand-mark">
-          <text>锦</text>
+          <image class="brand-mark-img" src="/images/brand_emblem_fuguang.jpg" mode="aspectFill" />
         </view>
         <view class="brand-text">
-          <text class="brand-title">锦衣旧梦</text>
-          <text class="brand-subtitle">民国风服装图鉴</text>
+          <text class="brand-title">浮光旅影</text>
+          <view class="brand-subtitle-row">
+            <view class="brand-subtitle-line"></view>
+            <text class="brand-subtitle">民国影像 · 服装图鉴</text>
+          </view>
         </view>
       </view>
       <view class="selection-entry" bindtap="goSelection">
