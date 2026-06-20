@@ -2,7 +2,7 @@ const CLOUD_ENV_ID = 'cloud1-d5grlm249e99949fd'
 const CLOUD_FILE_ID_ROOT = 'cloud://cloud1-d5grlm249e99949fd.636c-cloud1-d5grlm249e99949fd-1442266836'
 const CLOUD_FOLDER = 'clo' + 'thes'
 const CLOUD_FILE_ID_PREFIX = `${CLOUD_FILE_ID_ROOT}/${CLOUD_FOLDER}`
-const TEMP_URL_CACHE_KEY = 'cloudAssetTempUrlCacheV3'
+const TEMP_URL_CACHE_KEY = 'cloudAssetTempUrlCacheV4'
 const TEMP_URL_CACHE_TTL = 30 * 60 * 1000
 const LOCAL_IMAGE_CACHE_KEY = 'cloudAssetLocalImageCache'
 const LOCAL_IMAGE_CACHE_VERSION = 3
@@ -186,52 +186,13 @@ function cacheLocalImagesFromTempCache(fileIds) {
 
 function saveTempUrlCache() {
   if (!storageCacheLoaded || !canUseStorage()) return
-
-  const current = Date.now()
-  const saved = {}
-  Object.keys(tempUrlCache).forEach(fileId => {
-    const expiresAt = tempUrlExpireCache[fileId] || 0
-    if (tempUrlCache[fileId] && expiresAt > current) {
-      saved[fileId] = {
-        url: tempUrlCache[fileId],
-        expiresAt
-      }
-    }
-  })
-
-  try {
-    wx.setStorageSync(TEMP_URL_CACHE_KEY, saved)
-  } catch (err) {
-    console.warn('save cloud image url cache failed', err)
-  }
+  // Cloud temp URLs can become invalid between page visits, so keep them in memory only.
 }
 
 function loadTempUrlCache() {
   if (storageCacheLoaded || !canUseStorage()) return
 
   storageCacheLoaded = true
-
-  try {
-    const saved = wx.getStorageSync(TEMP_URL_CACHE_KEY) || {}
-    const current = Date.now()
-    let hasExpired = false
-
-    Object.keys(saved).forEach(fileId => {
-      const item = saved[fileId]
-      if (item && item.url && item.expiresAt > current) {
-        tempUrlCache[fileId] = item.url
-        tempUrlExpireCache[fileId] = item.expiresAt
-      } else {
-        hasExpired = true
-      }
-    })
-
-    if (hasExpired) {
-      saveTempUrlCache()
-    }
-  } catch (err) {
-    console.warn('load cloud image url cache failed', err)
-  }
 }
 
 function getCachedTempUrl(fileId) {
@@ -251,6 +212,13 @@ function getCachedTempUrl(fileId) {
 
 function getCachedCloudAssetPath(fileId) {
   return getCachedTempUrl(fileId) || getCachedLocalImage(fileId) || fileId
+}
+
+function clearCachedTempUrls(fileIds) {
+  fileIds.forEach(fileId => {
+    delete tempUrlCache[fileId]
+    delete tempUrlExpireCache[fileId]
+  })
 }
 
 function initCloud() {
@@ -358,21 +326,18 @@ async function resolveCloudUrls(value) {
   const fileIds = []
   collectCloudFileIds(value, fileIds)
   const uniqueFileIds = Array.from(new Set(fileIds))
-  const unresolved = uniqueFileIds.filter(fileId => !getCachedTempUrl(fileId))
 
-  if (!unresolved.length) {
-    cacheLocalImagesFromTempCache(uniqueFileIds)
-    return replaceCloudFileIds(value)
-  }
+  if (!uniqueFileIds.length) return value
 
   if (typeof wx === 'undefined' || !wx.cloud || !wx.cloud.getTempFileURL) {
     return replaceCloudFileIds(value)
   }
 
   initCloud()
+  clearCachedTempUrls(uniqueFileIds)
 
-  for (let i = 0; i < unresolved.length; i += MAX_FILE_IDS_PER_BATCH) {
-    const batch = unresolved.slice(i, i + MAX_FILE_IDS_PER_BATCH)
+  for (let i = 0; i < uniqueFileIds.length; i += MAX_FILE_IDS_PER_BATCH) {
+    const batch = uniqueFileIds.slice(i, i + MAX_FILE_IDS_PER_BATCH)
     try {
       await getTempFileURLByFunction(batch)
     } catch (err) {
