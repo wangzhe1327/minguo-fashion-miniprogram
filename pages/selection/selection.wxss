@@ -256,7 +256,7 @@
   gap: 10rpx;
 }
 
-.selected-serial {
+.selected-rack {
   color: var(--accent);
   font-size: 23rpx;
   font-weight: 800;
@@ -332,7 +332,7 @@
 .actions {
   margin: 24rpx 28rpx 0;
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr 1fr;
   gap: 16rpx;
 }
 
@@ -365,4 +365,12 @@
 
 .action-btn.primary text {
   color: #FFFFFF;
+}
+
+.action-btn.wide {
+  grid-column: 1 / -1;
+}
+
+.action-btn.disabled {
+  opacity: 0.72;
 }

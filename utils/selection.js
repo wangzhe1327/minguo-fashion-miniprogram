@@ -47,13 +47,14 @@ function clearSelection() {
 
 function getSelectionSummary(items) {
   const list = items || []
-  const serials = list
-    .map(item => item.serialNo || String(item.id).padStart(2, '0'))
+  const racks = Array.from(new Set(list
+    .map(item => item.rackLabel || (item.rackCode ? `${item.rackCode}区` : ''))
     .filter(Boolean)
+  ))
   const categories = Array.from(new Set(list.map(item => item.categoryName || item.category).filter(Boolean)))
   return {
     count: list.length,
-    serialsText: serials.length ? serials.join('、') : '未选择',
+    racksText: racks.length ? racks.join('、') : '未选择',
     categoriesText: categories.length ? categories.join('、') : '未选择'
   }
 }
@@ -72,9 +73,9 @@ function buildConsultText(items, form) {
     '选款清单：'
   ]
 
-  list.forEach((item, index) => {
-    const serialNo = item.serialNo || String(item.id).padStart(2, '0')
-    lines.push(`${index + 1}. 序号 ${serialNo}｜${item.name}｜${item.categoryName || item.category || '分类待确认'}`)
+  list.forEach(item => {
+    const rackLabel = item.rackLabel || (item.rackCode ? `${item.rackCode}区` : '未分区')
+    lines.push(`- ${rackLabel}｜${item.name}｜${item.categoryName || item.category || '分类待确认'}`)
   })
 
   lines.push('')

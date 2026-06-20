@@ -1661,6 +1661,50 @@ const homeDisplayOrder = [
   1, 2, 3, 4, 5, 17, 18, 19, 27
 ]
 
+const rackAreas = {
+  A: [38, 43, 8, 20, 33, 7, 10, 48],
+  B: [25, 29, 24, 14, 32, 36, 41, 45],
+  C: [46, 30, 40, 31, 47, 22, 6, 9],
+  D: [11, 12, 13, 15, 16, 21, 23, 26],
+  E: [28, 34, 35, 37, 39, 42, 44],
+  T: [1, 2, 3, 4, 5, 17, 18, 19, 27],
+  M: []
+}
+
+const rackCodeById = Object.keys(rackAreas).reduce((map, code) => {
+  rackAreas[code].forEach(id => {
+    map[id] = code
+  })
+  return map
+}, {})
+
+function getRackCode(item) {
+  const categoryName = item.categoryName || ''
+
+  if (item.category === 'tongzhuang' || categoryName.includes('童')) {
+    return 'T'
+  }
+
+  if (
+    item.category === 'menswear' ||
+    item.category === 'nanzhuang' ||
+    categoryName.includes('男装') ||
+    categoryName.includes('男士') ||
+    categoryName.includes('男款') ||
+    categoryName.includes('男式')
+  ) {
+    return 'M'
+  }
+
+  return rackCodeById[item.id] || 'A'
+}
+
+clothingList.forEach(item => {
+  const rackCode = getRackCode(item)
+  item.rackCode = rackCode
+  item.rackLabel = `${rackCode}区`
+})
+
 const homeDisplayRank = homeDisplayOrder.reduce((rank, id, index) => {
   rank[id] = index
   return rank

@@ -72,6 +72,10 @@ Page({
     wx.navigateTo({ url: '/pages/retouch/retouch' })
   },
 
+  goToAdmin() {
+    wx.navigateTo({ url: '/pages/admin/admin' })
+  },
+
   goToFavorites() {
     wx.switchTab({ url: '/pages/index/index' })
   },

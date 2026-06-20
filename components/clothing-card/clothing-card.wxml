@@ -23,7 +23,7 @@
     <text class="card-name">{{item.name}}</text>
     <text class="card-desc">{{item.subtitle}}</text>
     <view class="card-meta">
-      <text class="card-serial">序号 {{item.serialNo}}</text>
+      <text class="card-rack">{{item.rackLabel || item.rackCode}}</text>
       <text class="card-category">{{item.categoryName}}</text>
     </view>
     <view class="card-actions">

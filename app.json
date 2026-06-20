@@ -5,6 +5,7 @@
     "pages/detail/detail",
     "pages/gallery/gallery",
     "pages/retouch/retouch",
+    "pages/admin/admin",
     "pages/selection/selection",
     "pages/profile/profile"
   ],

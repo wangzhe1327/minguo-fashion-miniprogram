@@ -35,8 +35,8 @@
         <text class="detail-name">{{item.name}}</text>
         <text class="detail-subtitle">{{item.subtitle}}</text>
       </view>
-      <view class="detail-serial">
-        <text>序号 {{item.serialNo}}</text>
+      <view class="detail-rack">
+        <text>{{item.rackLabel || item.rackCode}}</text>
       </view>
     </view>
 

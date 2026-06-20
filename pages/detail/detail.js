@@ -12,7 +12,8 @@ function toCardItem(item) {
     categoryName: item.categoryName,
     subtitle: item.subtitle,
     image: item.image,
-    serialNo: item.serialNo || String(item.id).padStart(2, '0')
+    rackCode: item.rackCode || '',
+    rackLabel: item.rackLabel || (item.rackCode ? `${item.rackCode}区` : '')
   }
 }
 

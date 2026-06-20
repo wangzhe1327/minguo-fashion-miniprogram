@@ -29,6 +29,8 @@ cloud://cloud1-d5grlm249e99949fd.636c-cloud1-d5grlm249e99949fd-1442266836/clothe
 ```text
 cloudfunctions/resolveImageUrls
 cloudfunctions/getPhotoAlbum
+cloudfunctions/adminAppointments
+cloudfunctions/createAppointment
 cloudfunctions/createRetouchOrder
 cloudfunctions/listRetouchOrders
 cloudfunctions/processRetouchOrder
@@ -37,6 +39,10 @@ cloudfunctions/processRetouchOrder
 `resolveImageUrls` 用于通过服务端权限把服装图片 `fileID` 转为临时 HTTPS 图片地址。
 
 `getPhotoAlbum` 用于根据用户输入的取片码查询云数据库 `photoAlbums`，并返回可预览和保存的照片临时地址。
+
+`adminAppointments` 用于管理员登录校验，并读取云数据库 `appointments` 中的用户预约清单。
+
+`createAppointment` 用于把用户在选款清单页提交的预约日期、联系方式和服装清单写入云数据库 `appointments`，店家可在云开发控制台查看。
 
 `createRetouchOrder` 用于创建精修特效订单。
 
@@ -215,6 +221,8 @@ C:\vmshare\minguo-fashion-miniprogram
 ```bash
 cli.bat cloud functions deploy --env cloud1-d5grlm249e99949fd --names resolveImageUrls --project <project-path> --remote-npm-install
 cli.bat cloud functions deploy --env cloud1-d5grlm249e99949fd --names getPhotoAlbum --project <project-path> --remote-npm-install
+cli.bat cloud functions deploy --env cloud1-d5grlm249e99949fd --names adminAppointments --project <project-path> --remote-npm-install
+cli.bat cloud functions deploy --env cloud1-d5grlm249e99949fd --names createAppointment --project <project-path> --remote-npm-install
 cli.bat cloud functions deploy --env cloud1-d5grlm249e99949fd --names createRetouchOrder --project <project-path> --remote-npm-install
 cli.bat cloud functions deploy --env cloud1-d5grlm249e99949fd --names listRetouchOrders --project <project-path> --remote-npm-install
 cli.bat cloud functions deploy --env cloud1-d5grlm249e99949fd --names processRetouchOrder --project <project-path> --remote-npm-install

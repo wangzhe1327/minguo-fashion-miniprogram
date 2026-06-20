@@ -109,14 +109,14 @@
   line-height: 1.45;
 }
 
-.detail-serial {
+.detail-rack {
   flex-shrink: 0;
   padding: 8rpx 14rpx;
   border-radius: 8rpx;
   background: rgba(124, 63, 34, 0.1);
 }
 
-.detail-serial text {
+.detail-rack text {
   font-size: 24rpx;
   font-weight: 800;
   color: var(--accent);

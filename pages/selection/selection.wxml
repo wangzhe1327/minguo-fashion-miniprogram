@@ -16,8 +16,8 @@
     </view>
     <view class="summary-divider"></view>
     <view class="summary-item wide">
-      <text class="summary-num small">{{summary.serialsText}}</text>
-      <text class="summary-label">序号清单</text>
+      <text class="summary-num small">{{summary.racksText}}</text>
+      <text class="summary-label">衣架分区</text>
     </view>
     <view class="summary-divider"></view>
     <view class="summary-item wide">
@@ -47,6 +47,14 @@
       <text class="form-label">人数/件数</text>
       <input class="form-input" type="number" placeholder="例如 2" value="{{form.people}}" bindinput="onPeopleInput" />
     </view>
+    <view class="form-row">
+      <text class="form-label">称呼</text>
+      <input class="form-input" placeholder="方便联系你" value="{{form.contactName}}" bindinput="onContactNameInput" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">联系电话</text>
+      <input class="form-input" type="number" maxlength="20" placeholder="用于确认预约" value="{{form.contactPhone}}" bindinput="onContactPhoneInput" />
+    </view>
     <view class="remark-box">
       <text class="form-label">备注</text>
       <textarea
@@ -71,7 +79,7 @@
         <text class="selected-name">{{item.name}}</text>
         <text class="selected-desc">{{item.subtitle}}</text>
         <view class="selected-meta">
-          <text class="selected-serial">序号 {{item.serialNo}}</text>
+          <text class="selected-rack">{{item.rackLabel || item.rackCode}}</text>
           <text class="selected-category">{{item.categoryName}}</text>
         </view>
       </view>
@@ -93,8 +101,11 @@
     <view class="action-btn secondary" bindtap="goHome">
       <text>继续选款</text>
     </view>
-    <view class="action-btn primary" bindtap="copyConsult">
+    <view class="action-btn secondary" bindtap="copyConsult">
       <text>复制咨询单</text>
+    </view>
+    <view class="action-btn primary wide {{isSubmittingAppointment ? 'disabled' : ''}}" bindtap="submitAppointment">
+      <text>{{isSubmittingAppointment ? '提交中' : '提交预约'}}</text>
     </view>
   </view>
 
